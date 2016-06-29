@@ -9,7 +9,7 @@ while playing do --choice=true if they say high, else false if low
   if next<card and choice or next>card and not choice then --If wrong
     bet=0,playing=false;
   elseif card~=next then --Equal card doesn't change the bet or winnings
-    bet=bet+(choice and payout[card] or payout[14-card])
+    bet=bet*(choice and payout[card] or payout[14-card])
   end
 
   --Here we would ask if they wanna keep going, and set 'playing' accordingly
