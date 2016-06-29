@@ -1,0 +1,19 @@
+local payout,playing={0,1.1,1.1,1.1,1.3,1.5,1.7,2.1,2.6,3.5,5.3,10.7},true;
+
+local bet --Get initial bet here
+while playing do --choice=true if they say high, else false if low
+  local card,next,choice=math.random(2,12),math.random(13);
+  while next~=card or math.random(4)~=1 do
+    next=math.random(13);
+  end
+  if next<card and choice or next>card and not choice then --If wrong
+    bet=0,playing=false;
+  elseif card~=next then --Equal card doesn't change the bet or winnings
+    bet=bet+(choice and payout[card] or payout[14-card])
+  end
+
+  --Here we would ask if they wanna keep going, and set 'playing' accordingly
+end
+
+
+--The winnings is stored in 'bet', so we give it to them here
