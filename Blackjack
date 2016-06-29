@@ -1,0 +1,91 @@
+local function newDeck()
+  local deck,min={},math.min;
+  for i=0,3 do
+    for j=1,13 do
+      local n,m=13*i+j,math.random(1,n);
+      deck[m],deck[n]=min(j,10),deck[m];
+    end
+  end
+  return deck;
+end
+
+local function tabSum(tab)
+  return tab[1] and table.remove(tab)+tabSum(tab) or 0
+end
+
+--Get bets here
+
+local deck,players,dealer=newDeck(),{
+    {{table.remove(deck),
+      table.remove(deck)}},
+    {{table.remove(deck),
+      table.remove(deck)}},
+    {{table.remove(deck),
+      table.remove(deck)}}},
+     {table.remove(deck),
+      table.remove(deck)};
+
+if dealer[1]==1 then
+  --Insurance bet, if dealer goes blackjack pay insurance*2
+  if dealer[2]==10 then
+    --Payout insurance, keep regular bet unless tie
+  end
+elseif dealer[1]==10 and dealer[2]==1 then
+  --EVERYBODY LOSES (or ties with blackjack) YAY FOR US
+end
+
+for p,hands in players do
+  if hands=={{1,10}} or hands=={{10,1}} then
+    --Player gets back hands.bet*1.5
+  elseif surrender then
+    --Player gets back hands.bet*0.5
+  else
+    local allStand=false;
+    while not allStand do
+      allStand=true;
+      for k,hand in hands do
+        if not hand.stand then
+          if choice=="stand" then
+            hand.stand=true;
+          elseif choice=="hit" then
+            table.insert(hand,table.remove(deck));
+            if tabSum(hand)>21 then
+              --THEY LOSE :D
+            end
+          elseif choice=="double" and not hand[3] then
+            hands.bet=hands.bet*2;
+            table.insert(hand,table.remove(deck));
+            hand.stand=true;
+            if hand[1]+hand[2]+hand[3]>21 then
+              --THEY LOSE A LOT ::::DDDD
+            end
+          elseif choice=="split" and hand[1]==hand[2] and not hand[3] then
+            hands.bet=hands.bet*2;
+            hands.insert({hand[2],table.remove(deck)});
+            hand[2]=table.remove(deck);
+          end
+          allStand=false;
+        end
+      end
+    end
+  end
+end
+
+local dealerSum,ace=dealer[1]+dealer[2];
+if dealer[1]==1 or dealer[2]==1 then
+  dealerSum=dealerSum+10;
+  ace=true;
+end
+while dealerSum<17 do
+  table.insert(dealer,table.remove(deck));
+  dealerSum=dealerSum+dealer[#dealer];
+  if ace and dealerSum>21 then
+    dealerSum=dealerSum-10;
+  end
+end
+
+if dealerSum>21 then
+  --All players still in get back their bet*2
+elseif
+  --I'll finish it later
+end
