@@ -16,7 +16,6 @@ end
 
 local workingStack = {workingDirectory}
 local function trackedLoad(file)
-  file =
   if beingLoaded[file] then
     error("Circular reference between "..file.." and last call", 3)
   end
@@ -24,8 +23,10 @@ local function trackedLoad(file)
   table.insert(workingStack, file)
   local val = loadfile(file)
   return function(...)
-    val(...)
+    local value = val(...)
     table.remove(workingStack, file)
+    beingLoaded[file] = false
+    return value
   end
 end
 
@@ -34,9 +35,9 @@ _G.require = function(dependencies, callback)
   for i=1,#dependencies do
     local resolved = resolvePath(dependencies[i], workingStack[#workingStack])
     if not loadedDependencies[resolved] then
-      objectList[i] = table.insert(loadedDependencies,trackedLoad(resolved)())
-    else
-      objectList[i] = loadedDependencies[resolved]
+      loadedDependencies[resolved] = trackedLoad(resolved)()
     end
+    objectList[i] = loadedDependencies[resolved]
   end
+  callback(unpack(objectList))
 end
