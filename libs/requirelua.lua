@@ -39,5 +39,5 @@ _G.require = function(dependencies, callback)
     end
     objectList[i] = loadedDependencies[resolved]
   end
-  callback(unpack(objectList))
+  return callback(unpack(objectList))
 end
